@@ -1,0 +1,28 @@
+"!sudo apt update"
+##build API
+!apt-get install openjdk-8-jdk-headless -qq > /dev/null
+!wget -q https://downloads.apache.org/spark/spark-2.4.8/spark-2.4.8-bin-hadoop2.7.tgz
+!tar xf spark-2.4.8-bin-hadoop2.7.tgz
+!pip install -q findspark
+#prepare library
+import os
+os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-8-openjdk-amd64"
+os.environ["SPARK_HOME"] = "/content/spark-2.4.8-bin-hadoop2.7"
+import findspark
+findspark.init()
+from google.colab import files
+from pyspark.sql import SparkSession
+from pyspark.ml.feature import VectorAssembler
+from pyspark.sql.functions import isnan, when, count, col, lit
+from pyspark.ml.regression import RandomForestRegressor
+from pyspark.ml.evaluation import RegressionEvaluator
+from pyspark.ml import Pipeline
+from pyspark.ml.tuning import CrossValidator
+from pyspark.ml.evaluation import RegressionEvaluator
+from pyspark.ml.tuning import ParamGridBuilder
+
+sc = SparkSession.builder.master("local[*]").getOrCreate()
+#upload data(csv documnets)
+files.upload()
+!ls
+data = sc.read.csv('data.csv', inferSchema=True, header=True)
