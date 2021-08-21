@@ -1,0 +1,10 @@
+eval = RegressionEvaluator(labelCol='MSRP')
+rmse = eval.evaluate(pred)
+mse = eval.evaluate(pred, {eval.metricName: "mse"})
+mae = eval.evaluate(pred, {eval.metricName: "mae"})
+r2 = eval.evaluate(pred, {eval.metricName: "r2"})
+
+print("RMSE: %.3f" %rmse)
+print("MSE: %.3f" %mse)
+print("MAE: %.3f" %mae)
+print("r2: %.3f" %r2)
