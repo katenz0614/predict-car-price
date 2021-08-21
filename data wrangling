@@ -1,0 +1,17 @@
+data.printSchema()
+data.describe().toPandas().transpose()
+#data wrangling
+def replace(column, value):
+  return when(column != value, column).otherwise(lit(None))
+data = data.withColumn("Market Category", replace(col("Market Category"),"N/A"))
+data.select([count(when(isnan(c) | col(c).isNull(), c)).alias(c) for c in data.columns]).show()
+data = data.drop("Market Category")
+data = data.na.drop()
+print((data.count(), len(data.columns)))
+assembler = VectorAssembler(inputCols=['Year', 'Engine HP', 'Engine Cylinders', 
+                                       'Number of Doors', 'highway MPG', 'city mpg', 'Popularity'],
+                            outputCol='Attributes')
+regressor = RandomForestRegressor(featuresCol='Attributes', labelCol='MSRP')
+pipeline = Pipeline(stages=[assembler, regressor])
+pipeline.write().overwrite().save('pipeline')
+!ls
