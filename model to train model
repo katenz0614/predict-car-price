@@ -13,3 +13,5 @@ cvModel = crossval.fit(train_data)
 bestModel = cvModel.bestModel
 for x in range(len(bestModel.stages)):
   print(bestModel.stages[x])
+pred = cvModel.transform(test_data)
+pred.select('MSRP', 'prediction').show()
